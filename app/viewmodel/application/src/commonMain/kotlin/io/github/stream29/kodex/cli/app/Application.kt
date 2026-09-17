@@ -27,7 +27,7 @@ import io.github.stream29.kodex.cli.agent.AgentAutomaticTitleSettings
 import io.github.stream29.kodex.cli.agent.AgentRuntimeHistoryViewModelFactory
 import io.github.stream29.kodex.cli.agent.AgentRuntimeViewModelArguments
 import io.github.stream29.kodex.cli.agent.DefaultAgentRuntimeViewModelFactory
-import io.github.stream29.kodex.cli.auth.FileSystemKodexAuthStore
+import io.github.stream29.kodex.cli.auth.InMemoryKodexAuthStore
 import io.github.stream29.kodex.cli.auth.KodexAuthStore
 import io.github.stream29.kodex.cli.history.DefaultAgentHistoryViewModelFactory
 import io.github.stream29.kodex.cli.newsession.DEFAULT_NEW_SESSION_NAME
@@ -47,6 +47,7 @@ import io.github.stream29.kodex.mcp.impl.DefaultMcpOAuthClient
 import io.github.stream29.kodex.mcp.impl.McpManagerImpl
 import io.github.stream29.kodex.mcp.impl.McpServiceImpl
 import io.github.stream29.kodex.openai.KodexAgentSettings
+import io.github.stream29.kodex.openai.OpenAiSubscriptionAuthState
 import io.github.stream29.kodex.openai.Reasoning
 import io.github.stream29.kodex.openai.accountusage.CodexAccountUsageStore
 import io.github.stream29.kodex.openai.accountusage.CodexAccountUsageStore as createCodexAccountUsageStore
@@ -61,6 +62,7 @@ import io.github.stream29.kodex.utils.coroutines.cancelAndJoin
 import io.github.stream29.kodex.utils.kodexhome.KodexHome
 import io.github.stream29.kodex.utils.kotlinxiocoroutines.SystemCoroutineFileSystem
 import io.github.stream29.kodex.utils.logging.global
+import io.github.stream29.kodex.utils.osenvironment.environmentVariable
 import io.github.stream29.kodex.utils.osenvironment.requireUserHomeDirectory
 import io.github.stream29.kodex.utils.shellclient.Shell
 import kotlinx.coroutines.CancellationException
@@ -259,11 +261,10 @@ public class KodexApplication private constructor(
                 settingsDirectory = dataDirectory,
                 defaults = KodexGlobalSettings(),
             )
-            val authStore = scope.FileSystemKodexAuthStore(
-                dataDirectory = dataDirectory,
-                codexHome = codexDirectory,
-                globalSettings = globalSettings,
-                fileSystem = SystemCoroutineFileSystem,
+            val apiKey = environmentVariable("KODEX_OPENAI_API_KEY")
+                ?: error("KODEX_OPENAI_API_KEY environment variable is required.")
+            val authStore = InMemoryKodexAuthStore(
+                OpenAiSubscriptionAuthState(accessToken = apiKey),
             )
             val clientConfig = OpenAiClientConfig()
             val contextSettings = globalSettings.settings

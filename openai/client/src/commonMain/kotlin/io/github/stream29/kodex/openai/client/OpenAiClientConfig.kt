@@ -1,8 +1,12 @@
 package io.github.stream29.kodex.openai.client
 
+import io.github.stream29.kodex.utils.osenvironment.environmentVariable
+
 public data class OpenAiClientConfig(
-    public val baseUrl: String = "https://chatgpt.com/backend-api/codex",
-    public val accountBaseUrl: String = "https://chatgpt.com/backend-api",
+    public val baseUrl: String =
+        environmentVariable("KODEX_OPENAI_BASE_URL") ?: "https://oneapi-comate.baidu-int.com/v1",
+    public val accountBaseUrl: String =
+        environmentVariable("KODEX_OPENAI_ACCOUNT_BASE_URL") ?: "https://oneapi-comate.baidu-int.com",
     public val clientVersion: String = KodexCompatibleApiClientVersion,
     public val originator: String = DefaultCodexOriginator,
     public val userAgent: String = codexUserAgent(originator, clientVersion),
