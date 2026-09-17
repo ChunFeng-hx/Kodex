@@ -263,7 +263,7 @@ public class KodexApplication private constructor(
             )
             val apiKey = environmentVariable("KODEX_OPENAI_API_KEY")
                 ?: error("KODEX_OPENAI_API_KEY environment variable is required.")
-            val authStore = InMemoryKodexAuthStore(
+            val authStore: KodexAuthStore = InMemoryKodexAuthStore(
                 OpenAiSubscriptionAuthState(accessToken = apiKey),
             )
             val clientConfig = OpenAiClientConfig()
