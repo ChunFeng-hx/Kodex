@@ -424,7 +424,7 @@ public enum class MessagePhase {
 public sealed interface ReasoningItemReasoningSummary {
     @Serializable
     @SerialName("summary_text")
-    public data class SummaryText(public val text: String) : ReasoningItemReasoningSummary
+    public data class SummaryText(public val text: String = "") : ReasoningItemReasoningSummary
 }
 
 /**
@@ -434,11 +434,11 @@ public sealed interface ReasoningItemReasoningSummary {
 public sealed interface ReasoningItemContent {
     @Serializable
     @SerialName("reasoning_text")
-    public data class ReasoningText(public val text: String) : ReasoningItemContent
+    public data class ReasoningText(public val text: String = "") : ReasoningItemContent
 
     @Serializable
     @SerialName("text")
-    public data class Text(public val text: String) : ReasoningItemContent
+    public data class Text(public val text: String = "") : ReasoningItemContent
 }
 
 /**
